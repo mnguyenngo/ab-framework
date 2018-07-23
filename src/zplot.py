@@ -1,11 +1,10 @@
 import scipy.stats as scs
 import matplotlib.pyplot as plt
 import numpy as np
-
 plt.style.use('ggplot')
 
 
-def zplot(cdf=0.95, align='center'):
+def zplot(cdf=0.95, two_tailed=True):
     """Plots a z distribution with common annotations
 
     Example:
@@ -32,31 +31,28 @@ def zplot(cdf=0.95, align='center'):
 
     ax.plot(x, y)
 
-    if align == 'center':
-
-        CIa = norm.ppf(0.5 - cdf / 2)
-        CIb = norm.ppf(0.5 + cdf / 2)
-        ax.vlines(CIb, 0, norm.pdf(CIb), color='grey', linestyle='--')
-        ax.vlines(CIa, 0, norm.pdf(CIa), color='grey', linestyle='--')
+    if two_tailed:
+        left = norm.ppf(0.5 - cdf / 2)
+        right = norm.ppf(0.5 + cdf / 2)
+        ax.vlines(right, 0, norm.pdf(right), color='grey', linestyle='--')
+        ax.vlines(left, 0, norm.pdf(left), color='grey', linestyle='--')
 
         ax.fill_between(x, 0, y, color='grey', alpha='0.25',
-                        where=(x > CIa) & (x < CIb))
+                        where=(x > left) & (x < right))
         plt.xlabel('z')
         plt.ylabel('PDF')
-        plt.text(CIa, norm.pdf(CIa), "z = {0:.3f}".format(CIa), fontsize=12,
+        plt.text(left, norm.pdf(left), "z = {0:.3f}".format(left), fontsize=12,
                  rotation=90, va="bottom", ha="right")
 
-    elif align == 'left':
-        CIb = norm.ppf(cdf)
-        ax.vlines(CIb, 0, norm.pdf(CIb), color='grey', linestyle='--')
-        ax.fill_between(x, 0, y, color='grey', alpha='0.25', where=x < CIb)
-
     else:
-        raise ValueError('align must be set to "center"(default) or "left"')
+        right = norm.ppf(cdf)
+        ax.vlines(right, 0, norm.pdf(right), color='grey', linestyle='--')
+        ax.fill_between(x, 0, y, color='grey', alpha='0.25', where=x < right)
 
-    plt.text(CIb, norm.pdf(CIb), "z = {0:.3f}".format(CIb), fontsize=12,
+    plt.text(right, norm.pdf(right), "z = {0:.3f}".format(right), fontsize=12,
              rotation=90, va="bottom", ha="left")
-    plt.text(0, 0.1, "area = {0:.3f}".format(cdf), fontsize=12, ha='center')
+    plt.text(0, 0.1, "shaded area = {0:.3f}".format(cdf), fontsize=12,
+             ha='center')
     plt.xlabel('z')
     plt.ylabel('PDF')
     plt.show()
