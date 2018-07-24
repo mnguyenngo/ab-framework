@@ -6,10 +6,12 @@ You can find the documentation for AB testing below. All articles should be kept
 
 * General
 * Definitions
-* Z distribution
+* The Binomial Distribution
+* Z-distribution
 * Minimum sample size
 * Confidence Interval
-  * Definition
-  * Equation
-  * Implementation
 * The AB Framework
+
+
+## References
+1. [Sample Size Calculator](https://www.evanmiller.org/ab-testing/sample-size.html)
