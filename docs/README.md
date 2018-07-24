@@ -5,9 +5,10 @@ You can find the documentation for AB testing below. All articles should be kept
 ## Table of Contents
 
 * General
+* Definitions
 * Z distribution
 * Minimum sample size
-* Confidence Intervals
+* Confidence Interval
   * Definition
   * Equation
   * Implementation
