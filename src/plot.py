@@ -30,6 +30,25 @@ def plot_norm_dist(ax, mu, sig, with_CI=False, sig_level=0.05):
         plot_CI(ax, mu, sig, sig_level=sig_level)
 
 
+def plot_binom_dist(ax, n, p):
+    """Adds a normal distribution to the axes provided
+
+    Example:
+        plot_norm_dist(ax, 0, 1)  # plots a standard normal distribution
+
+    Parameters:
+        ax (matplotlib axes)
+        mu (float): mean of the normal distribution
+        sig (float): standard deviation of the normal distribution
+
+    Returns:
+        None: the function adds a plot to the axes object provided
+    """
+    x = np.linspace(0, n, n+1)
+    y = scs.binom(n, p).pmf(x)
+    ax.plot(x, y)
+
+
 def plot_CI(ax, mu, s, sig_level=0.05, color='grey'):
     """Calculates the two-tailed confidence interval and adds the plot to
     an axes object.
@@ -141,6 +160,8 @@ def abplot(n, bcr, d_hat, sig_level=0.05, show_power=False, show_alpha=False,
     if show_beta:
         show_area(ax, d_hat, stderr, sig_level, area_type='beta')
 
+    plt.xlabel('d')
+    plt.ylabel('PDF')
     plt.show()
 
 
@@ -160,7 +181,7 @@ def show_area(ax, d_hat, stderr, sig_level, area_type='power'):
     if area_type == 'power':
         ax.fill_between(x, 0, alternative.pdf(x), color='green', alpha='0.25',
                         where=(x > right))
-        ax.text(-6 * stderr, null.pdf(0),
+        ax.text(-3 * stderr, null.pdf(0),
                 'power = {0:.3f}'.format(1 - alternative.cdf(right)),
                 fontsize=12)
 
@@ -170,7 +191,7 @@ def show_area(ax, d_hat, stderr, sig_level, area_type='power'):
     if area_type == 'alpha':
         ax.fill_between(x, 0, null.pdf(x), color='green', alpha='0.25',
                         where=(x > right))
-        ax.text(-6 * stderr, null.pdf(0),
+        ax.text(-3 * stderr, null.pdf(0),
                 'alpha = {0:.3f}'.format(1 - null.cdf(right)),
                 fontsize=12)
 
@@ -180,7 +201,7 @@ def show_area(ax, d_hat, stderr, sig_level, area_type='power'):
     if area_type == 'beta':
         ax.fill_between(x, 0, alternative.pdf(x), color='green', alpha='0.25',
                         where=(x < right))
-        ax.text(-6 * stderr, null.pdf(0),
+        ax.text(-3 * stderr, null.pdf(0),
                 'beta = {0:.3f}'.format(alternative.cdf(right)),
                 fontsize=12)
 
