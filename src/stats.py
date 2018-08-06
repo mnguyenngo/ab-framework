@@ -103,3 +103,8 @@ def min_sample_size(bcr, mde, power=0.8, sig_level=0.05):
              / mde**2)
 
     return min_N
+
+
+def p_val(N_A, N_B, p_A, p_B):
+    """Returns the p-value for an A/B test"""
+    return scs.binom(N_A, p_A).pmf(p_B * N_B)
