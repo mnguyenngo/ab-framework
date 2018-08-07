@@ -32,6 +32,12 @@ def generate_data(N_A, N_B, p_A, p_B, days=None, control_label='A',
     # total amount of rows in the data
     N = N_A + N_B
 
+    group_bern = scs.bernoulli(0.5)
+
+    # initiate bernoulli distributions to randomly sample from
+    A_bern = scs.bernoulli(p_A)
+    B_bern = scs.bernoulli(p_B)
+
     for idx in range(N):
         # initite empty row
         row = {}
@@ -42,12 +48,13 @@ def generate_data(N_A, N_B, p_A, p_B, days=None, control_label='A',
             else:
                 raise ValueError("Provide an integer for the days parameter.")
         # assign group based on 50/50 probability
-        row['group'] = scs.bernoulli(0.5).rvs()
+        row['group'] = group_bern.rvs()
+
         if row['group'] == 0:
             # assign conversion based on provided parameters
-            row['converted'] = scs.bernoulli(p_A).rvs()
+            row['converted'] = A_bern.rvs()
         else:
-            row['converted'] = scs.bernoulli(p_B).rvs()
+            row['converted'] = B_bern.rvs()
         # collect row into data container
         data.append(row)
 
