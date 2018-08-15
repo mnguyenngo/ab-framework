@@ -8,7 +8,7 @@ from .stats import pooled_SE, confidence_interval, ab_dist, p_val, z_val
 plt.style.use('ggplot')
 
 
-def plot_norm_dist(ax, mu, sig, with_CI=False, sig_level=0.05):
+def plot_norm_dist(ax, mu, sig, with_CI=False, sig_level=0.05, label=None):
     """Adds a normal distribution to the axes provided
 
     Example:
@@ -24,13 +24,13 @@ def plot_norm_dist(ax, mu, sig, with_CI=False, sig_level=0.05):
     """
     x = np.linspace(mu - 12 * sig, mu + 12 * sig, 1000)
     y = scs.norm(mu, sig).pdf(x)
-    ax.plot(x, y)
+    ax.plot(x, y, label=label)
 
     if with_CI:
         plot_CI(ax, mu, sig, sig_level=sig_level)
 
 
-def plot_binom_dist(ax, n, p):
+def plot_binom_dist(ax, n, p, label=None):
     """Adds a binomial distribution to the axes provided
 
     Example:
@@ -46,7 +46,7 @@ def plot_binom_dist(ax, n, p):
     """
     x = np.linspace(0, n, n+1)
     y = scs.binom(n, p).pmf(x)
-    ax.plot(x, y)
+    ax.plot(x, y, label=label)
 
 
 def plot_CI(ax, mu, s, sig_level=0.05, color='grey'):
@@ -91,7 +91,7 @@ def plot_null(ax, stderr):
         None: the function adds a plot to the axes object provided
 
     """
-    plot_norm_dist(ax, 0, stderr)
+    plot_norm_dist(ax, 0, stderr, label="Null")
     plot_CI(ax, mu=0, s=stderr, sig_level=0.05)
 
 
@@ -112,12 +112,13 @@ def plot_alt(ax, stderr, d_hat):
     Returns:
         None: the function adds a plot to the axes object provided
     """
-    plot_norm_dist(ax, d_hat, stderr)
+    plot_norm_dist(ax, d_hat, stderr, label="Alternative")
     # plot_CI(ax, mu=d_hat, s=stderr, sig_level=0.05)
 
 
 def abplot(N_A, N_B, bcr, d_hat, sig_level=0.05, show_power=False,
-           show_alpha=False, show_beta=False, show_p_value=False):
+           show_alpha=False, show_beta=False, show_p_value=False,
+           show_legend=True):
     """Example plot of AB test
 
     Example:
@@ -165,6 +166,10 @@ def abplot(N_A, N_B, bcr, d_hat, sig_level=0.05, show_power=False,
         ax.text(3 * stderr, null.pdf(0),
                 'p-value = {0:.3f}'.format(p_val),
                 fontsize=12, ha='left')
+
+    # option to show legend
+    if show_legend:
+        plt.legend()
 
     plt.xlabel('d')
     plt.ylabel('PDF')
@@ -218,7 +223,7 @@ def zplot(area=0.95, two_tailed=True, align_right=False):
     Example:
         zplot(area=0.95)
 
-        zplot(area=0.95, align='left')
+        zplot(area=0.80, two_tailed=False, align_right=True)
 
     Parameters:
         area (float): The area under the standard normal distribution curve.
