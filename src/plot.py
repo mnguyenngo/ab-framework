@@ -223,7 +223,7 @@ def zplot(area=0.95, two_tailed=True, align_right=False):
     Example:
         zplot(area=0.95)
 
-        zplot(area=0.95, align='left')
+        zplot(area=0.80, two_tailed=False, align_right=True)
 
     Parameters:
         area (float): The area under the standard normal distribution curve.
