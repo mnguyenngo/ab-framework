@@ -32,9 +32,10 @@ def generate_data(N_A, N_B, p_A, p_B, days=None, control_label='A',
     # total amount of rows in the data
     N = N_A + N_B
 
-    group_bern = scs.bernoulli(0.5)
+    # distribute events based on proportion of group size
+    group_bern = scs.bernoulli(N_A / (N_A + N_B))
 
-    # initiate bernoulli distributions to randomly sample from
+    # initiate bernoulli distributions from which to randomly sample
     A_bern = scs.bernoulli(p_A)
     B_bern = scs.bernoulli(p_B)
 
