@@ -8,7 +8,7 @@ from .stats import pooled_SE, confidence_interval, ab_dist, p_val, z_val
 plt.style.use('ggplot')
 
 
-def plot_norm_dist(ax, mu, sig, with_CI=False, sig_level=0.05, label=None):
+def plot_norm_dist(ax, mu, std, with_CI=False, sig_level=0.05, label=None):
     """Adds a normal distribution to the axes provided
 
     Example:
@@ -17,24 +17,24 @@ def plot_norm_dist(ax, mu, sig, with_CI=False, sig_level=0.05, label=None):
     Parameters:
         ax (matplotlib axes)
         mu (float): mean of the normal distribution
-        sig (float): standard deviation of the normal distribution
+        std (float): standard deviation of the normal distribution
 
     Returns:
         None: the function adds a plot to the axes object provided
     """
-    x = np.linspace(mu - 12 * sig, mu + 12 * sig, 1000)
-    y = scs.norm(mu, sig).pdf(x)
+    x = np.linspace(mu - 12 * std, mu + 12 * std, 1000)
+    y = scs.norm(mu, std).pdf(x)
     ax.plot(x, y, label=label)
 
     if with_CI:
-        plot_CI(ax, mu, sig, sig_level=sig_level)
+        plot_CI(ax, mu, std, sig_level=sig_level)
 
 
 def plot_binom_dist(ax, n, p, label=None):
     """Adds a binomial distribution to the axes provided
 
     Example:
-        plot_norm_dist(ax, 0, 1)  # plots a standard normal distribution
+        plot_binom_dist(ax, 0, 1)  # plots a standard normal distribution
 
     Parameters:
         ax (matplotlib axes)
@@ -64,9 +64,6 @@ def plot_CI(ax, mu, s, sig_level=0.05, color='grey'):
     Returns:
         None: the function adds a plot to the axes object provided
     """
-    # z = scs.norm().ppf(1 - sig_level/2)
-    # left = mu - z * s
-    # right = mu + z * s
     left, right = confidence_interval(sample_mean=mu, sample_std=s,
                                       sig_level=sig_level)
     ax.axvline(left, c=color, linestyle='--', alpha=0.5)
@@ -113,7 +110,6 @@ def plot_alt(ax, stderr, d_hat):
         None: the function adds a plot to the axes object provided
     """
     plot_norm_dist(ax, d_hat, stderr, label="Alternative")
-    # plot_CI(ax, mu=d_hat, s=stderr, sig_level=0.05)
 
 
 def abplot(N_A, N_B, bcr, d_hat, sig_level=0.05, show_power=False,
@@ -149,7 +145,7 @@ def abplot(N_A, N_B, bcr, d_hat, sig_level=0.05, show_power=False,
     plot_alt(ax, stderr, d_hat)
 
     # set extent of plot area
-    ax.set_xlim(-3 * d_hat, 3 * d_hat)
+    ax.set_xlim(-8 * stderr, 8 * stderr)
 
     # shade areas according to user input
     if show_power:
@@ -162,9 +158,9 @@ def abplot(N_A, N_B, bcr, d_hat, sig_level=0.05, show_power=False,
     # show p_value based on the binomial distributions for the two groups
     if show_p_value:
         null = ab_dist(stderr, 'control')
-        p_val = p_value(N_A, N_B, bcr, bcr+d_hat)
+        p_value = p_val(N_A, N_B, bcr, bcr+d_hat)
         ax.text(3 * stderr, null.pdf(0),
-                'p-value = {0:.3f}'.format(p_val),
+                'p-value = {0:.3f}'.format(p_value),
                 fontsize=12, ha='left')
 
     # option to show legend
